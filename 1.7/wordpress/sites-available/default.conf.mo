@@ -7,6 +7,6 @@ server {
   include /etc/nginx/include/wordpress.conf;
 }
 
-{{#MEMCACHED_ADDR}}
+{{#NGINX_MEMCACHED_ADDR}}
 include /etc/nginx/include/memcached_upstream.conf;
-{{#MEMCACHED_ADDR}}
+{{#NGINX_MEMCACHED_ADDR}}

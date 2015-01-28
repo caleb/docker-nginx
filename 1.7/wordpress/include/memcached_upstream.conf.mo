@@ -1,3 +1,3 @@
 upstream memcached-servers {
-  server {{MEMCACHED_ADDR}}:{{MEMCACHED_PORT}};
+  server {{NGINX_MEMCACHED_ADDR}}:{{NGINX_MEMCACHED_PORT}};
 }

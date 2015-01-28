@@ -2,25 +2,25 @@
 set -e
 shopt -s globstar
 
-export ROOT
-export SERVER_NAME
-export CANONICAL_NAME
+export NGINX_ROOT
+export NGINX_SERVER_NAME
+export NGINX_CANONICAL_NAME
+export NGINX_WORKER_PROCESSES
 export PHP_FPM_ADDR
 export PHP_FPM_PORT
 export MEMCACHED_ADDR
 export MEMCACHED_PORT
-export WORKER_PROCESSES
 
-: ${ROOT:=/srv}
-: ${SERVER_NAME:=localhost}
+: ${NGINX_ROOT:=/srv}
+: ${NGINX_SERVER_NAME:=localhost}
+: ${NGINX_WORKER_PROCESSES:=3}
 : ${PHP_FPM_ADDR:=php-fpm}
 : ${PHP_FPM_PORT:=9000}
-: ${MEMCACHED_ADDR:=memcached}
+: ${MEMCACHED_ADDR:=}
 : ${MEMCACHED_PORT:=11211}
-: ${WORKER_PROCESSES:=3}
 
 if [ -z "${CANONICAL_NAME}" ]; then
-  CANONICAL_NAME="$(echo -n "${SERVER_NAME}" | cut -f 1 -d " ")"
+  NGINX_CANONICAL_NAME="$(echo -n "${SERVER_NAME}" | cut -f 1 -d " ")"
 fi
 
 # Fill out the templates

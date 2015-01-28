@@ -1,11 +1,11 @@
 charset UTF-8;
-root {{ROOT}};
+root {{NGINX_ROOT}};
 index index.php index.html index.htm;
 
-server_name {{SERVER_NAME}};
+server_name {{NGINX_SERVER_NAME}};
 
 location / {
-    try_files $uri $uri/ @memcached;
+    try_files $uri $uri/{{#MEMCACHED_ADDR}}@memcached{{/MEMCACHED_ADDR}};
 }
 
 location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ {
@@ -17,7 +17,7 @@ location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ {
 #
 error_page 500 502 503 504 /50x.html;
 location = /50x.html {
-    root {{ROOT}};
+    root {{NGINX_ROOT}};
 }
 
 # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
@@ -65,8 +65,10 @@ location ~ (\.php) {
     fastcgi_param	SSL_SESSION_ID    $ssl_session_id if_not_empty;
     fastcgi_param	SSL_CLIENT_VERIFY $ssl_client_verify if_not_empty;
 
-    fastcgi_pass {{PHP_FPM_ADDR}}:{{PHP_FPM_PORT}}
+    fastcgi_pass {{PHP_FPM_ADDR}}:{{PHP_FPM_PORT}};
 }
+
+{{#MEMCACHED_ADDR}}
 
 # try to get result from memcached
 location @memcached {
@@ -104,3 +106,5 @@ location @rewrites {
     add_header X-Cache-Engine "No cache";
     rewrite ^ /index.php last;
 }
+
+{{/MEMCACHED_ADDR}}

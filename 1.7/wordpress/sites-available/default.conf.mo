@@ -2,9 +2,7 @@ server {
 	listen 80; ## listen for ipv4; this line is default and implied
 	listen [::]:80 default ipv6only=on; ## listen for ipv6
   
-  include /etc/nginx/include/env.conf;  
-  
-  server_name $env_server_name;
+  server_name {{SERVER_NAME}};
   
   include /etc/nginx/include/wordpress.conf;
 }

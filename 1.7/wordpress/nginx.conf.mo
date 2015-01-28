@@ -1,5 +1,5 @@
 user nginx;
-include /etc/nginx/include/worker_processes.conf;
+worker_processes {{WORKER_PROCESSES}}
 
 error_log /var/log/nginx/error.log warn;
 pid       /var/run/nginx.pid;

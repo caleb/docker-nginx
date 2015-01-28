@@ -2,9 +2,7 @@ server {
 	listen 80; ## listen for ipv4; this line is default and implied
 	listen [::]:80 default ipv6only=on; ## listen for ipv6
   
-  include /etc/nginx/include/env.conf;  
-  
-  server_name $env_server_name;
+  server_name {{SERVER_NAME}};
   
   redirect 301 https://$canonical_name$request_uri;
 }
@@ -13,9 +11,7 @@ server {
   listen 443 ssl;
   listen [::]:443 default ssl ipv6only=on; ## listen for ipv6
   
-  include /etc/nginx/include/env.conf;  
-
-  server_name $env_server_name;
+  server_name {{SERVER_NAME}};
 
   ssl_certificate     /etc/nginx/certs/ssl.crt;
   ssl_certificate_key /etc/nginx/certs/ssl.key; 

@@ -7,11 +7,13 @@ RUN mkdir -p /etc/nginx/include \
  && mkdir -p /etc/nginx/sites-enabled \
  && rm -rf /etc/nginx/conf.d
 
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY bin/mo /usr/local/bin/mo
 
-COPY sites-available/default.conf /etc/nginx/sites-available/default.conf
-COPY sites-available/ssl.conf /etc/nginx/sites-available/ssl.conf
-COPY include/wordpress.conf /etc/nginx/include/wordpress.conf
+COPY nginx.conf.mo /etc/nginx/nginx.conf.mo
+
+COPY sites-available/default.conf.mo /etc/nginx/sites-available/default.conf.mo
+COPY sites-available/ssl.conf.mo /etc/nginx/sites-available/ssl.conf.mo
+COPY include/wordpress.conf.mo /etc/nginx/include/wordpress.conf.mo
 
 COPY docker-entrypoint.sh /entrypoint.sh
 

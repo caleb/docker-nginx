@@ -5,7 +5,7 @@ index index.php index.html index.htm;
 server_name {{NGINX_SERVER_NAME}};
 
 location / {
-    try_files $uri $uri/{{#NGINX_MEMCACHED_ADDR}}@memcached{{/NGINX_MEMCACHED_ADDR}};
+    try_files $uri $uri/{{#NGINX_MEMCACHED_ADDR}} @memcached{{/NGINX_MEMCACHED_ADDR}};
 }
 
 location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ {
@@ -20,7 +20,7 @@ location = /50x.html {
     root {{NGINX_ROOT}};
 }
 
-# pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+# pass the PHP scripts to FastCGI server
 #
 location ~ (\.php) {
     try_files $uri =404;

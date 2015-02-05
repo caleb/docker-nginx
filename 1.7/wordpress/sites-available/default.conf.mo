@@ -9,4 +9,4 @@ server {
 
 {{#NGINX_MEMCACHED_ADDR}}
 include /etc/nginx/include/memcached_upstream.conf;
-{{#NGINX_MEMCACHED_ADDR}}
+{{/NGINX_MEMCACHED_ADDR}}

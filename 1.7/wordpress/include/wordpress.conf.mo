@@ -17,7 +17,7 @@ location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ {
 #
 error_page 500 502 503 504 /50x.html;
 location = /50x.html {
-    root {{NGINX_ROOT}};
+    root /usr/share/nginx/html;
 }
 
 # pass the PHP scripts to FastCGI server

@@ -4,7 +4,7 @@ server {
   
   server_name {{NGINX_SERVER_NAME}};
   
-  redirect 301 https://$canonical_name$request_uri;
+  redirect 301 https://{{NGINX_CANONICAL_NAME}}$request_uri;
 }
 
 server {

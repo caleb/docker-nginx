@@ -19,8 +19,9 @@ export NGINX_MEMCACHED_PORT
 : ${NGINX_MEMCACHED_ADDR:=}
 : ${NGINX_MEMCACHED_PORT:=11211}
 
-if [ -z "${CANONICAL_NAME}" ]; then
-  NGINX_CANONICAL_NAME="$(echo -n "${SERVER_NAME}" | cut -f 1 -d " ")"
+if [ -z "${NGINX_CANONICAL_NAME}" ]; then
+  # Grab the first server name to use as the canonical name
+  NGINX_CANONICAL_NAME="${NGINX_SERVER_NAME%% *}"
 fi
 
 # Fill out the templates

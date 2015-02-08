@@ -24,6 +24,25 @@ if [ -z "${NGINX_CANONICAL_NAME}" ]; then
   NGINX_CANONICAL_NAME="${NGINX_SERVER_NAME%% *}"
 fi
 
+if [ -n "${NGINX_SHARED_LINK}" ]; then
+  NGINX_SHARED_LINK_DEFAULT="${NGINX_SHARED_LINK}"
+fi
+
+# Link shared directories (like uploads)
+for link_var in ${!NGINX_SHARED_LINK_*}; do
+  link="${!link_var}"
+  if [ -n "${link}" ]; then
+    from="${link%%:*}"
+    to="${link#*:}"
+    if [ -z "${from}" ] || [ -z "${to}" ]; then
+      echo "A link must be in the form <from>:<to>"
+      exit 1
+    else
+      ln -f -s -T "${from}" "${to}"
+    fi
+  fi
+done
+
 # Fill out the templates
 for f in /etc/nginx/**/*.mo; do
   /usr/local/bin/mo "${f}" > "${f%.mo}"

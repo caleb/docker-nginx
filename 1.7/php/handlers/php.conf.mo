@@ -4,7 +4,7 @@ location ~ (\.php) {
     try_files $uri =404;
 
     {{#PHP_FPM_CLIENT_MAX_BODY_SIZE}}
-    client_max_body_size {{PHP_FPM_CLIENT_MAX_BODY_SIZE}}
+    client_max_body_size {{PHP_FPM_CLIENT_MAX_BODY_SIZE}};
     {{/PHP_FPM_CLIENT_MAX_BODY_SIZE}}
 
     fastcgi_index                   index.php;
@@ -47,5 +47,5 @@ location ~ (\.php) {
     fastcgi_param	SSL_SESSION_ID    $ssl_session_id if_not_empty;
     fastcgi_param	SSL_CLIENT_VERIFY $ssl_client_verify if_not_empty;
 
-    fastcgi_pass {{NGINX_PHP_FPM_ADDR}}:{{NGINX_PHP_FPM_PORT}};
+    fastcgi_pass {{PHP_FPM_ADDR}};
 }

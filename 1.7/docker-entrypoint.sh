@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -e
-shopt -s globstar
+shopt -s globstar nullglob
 
 export NGINX_ROOT
 export NGINX_SERVER_NAME

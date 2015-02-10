@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
-
-docker build -t docker.rodeopartners.com/nginx:1.7-php .
+dir="$(dirname $0)"
+docker build -t docker.rodeopartners.com/nginx:1.7-php "${dir}"

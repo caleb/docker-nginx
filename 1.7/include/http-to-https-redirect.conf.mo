@@ -4,9 +4,5 @@ server {
   
   server_name {{NGINX_SERVER_NAME}};
   
-  include /etc/nginx/include/wordpress.conf;
+  return 301 https://{{NGINX_CANONICAL_NAME}}$request_uri;
 }
-
-{{#NGINX_MEMCACHED_ADDR}}
-include /etc/nginx/include/memcached_upstream.conf;
-{{/NGINX_MEMCACHED_ADDR}}

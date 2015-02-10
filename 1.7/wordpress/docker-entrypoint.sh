@@ -2,58 +2,54 @@
 set -e
 shopt -s globstar
 
-export NGINX_ROOT
-export NGINX_SERVER_NAME
-export NGINX_CANONICAL_NAME
-export NGINX_WORKER_PROCESSES
-export NGINX_PHP_FPM_ADDR
-export NGINX_PHP_FPM_PORT
-export NGINX_MEMCACHED_ADDR
-export NGINX_MEMCACHED_PORT
+export MEMCACHED_ADDR
+export MEMCACHED_PORT
+export WORDPRESS_DIR
+export WORDPRESS_UPLOADS_DIR
 
-: ${NGINX_ROOT:=/srv}
-: ${NGINX_SERVER_NAME:=localhost}
-: ${NGINX_WORKER_PROCESSES:=3}
-: ${NGINX_PHP_FPM_ADDR:=php-fpm}
-: ${NGINX_PHP_FPM_PORT:=9000}
-: ${NGINX_MEMCACHED_ADDR:=}
-: ${NGINX_MEMCACHED_PORT:=11211}
+: ${WORDPRESS_DIR:=/srv/wordpress}
+: ${WORDPRESS_UPLOADS_DIR:=/uploads}
+: ${MEMCACHED_ADDR:=}
+: ${MEMCACHED_PORT:=11211}
 
-if [ -z "${NGINX_CANONICAL_NAME}" ]; then
-  # Grab the first server name to use as the canonical name
-  NGINX_CANONICAL_NAME="${NGINX_SERVER_NAME%% *}"
+if [ -z "${NGINX_ROOT}" ]; then
+  NGINX_ROOT="${WORDPRESS_DIR}"
 fi
 
-if [ -n "${NGINX_SHARED_LINK}" ]; then
-  NGINX_SHARED_LINK_DEFAULT="${NGINX_SHARED_LINK}"
+if [ -z "${WORDPRESS_DIR}" ] || [ ! -d "${WORDPRESS_DIR}" ] || [ ! -d "${WORDPRESS_DIR}/wp-admin" ]; then
+  echo "Either WORDPRESS_DIR isn't set, or doesn't point to a wordpress directory"
+  exit 1
 fi
 
-# Link shared directories (like uploads)
-for link_var in ${!NGINX_SHARED_LINK_*}; do
+#
+# Check that the uploads directory is linked outside of the wordpress project
+#
+uploads_link_found=false
+for link_var in ${!NGINX_SHARED_LINK*}; do
   link="${!link_var}"
-  if [ -n "${link}" ]; then
-    from="${link%%:*}"
-    to="${link#*:}"
-    if [ -z "${from}" ] || [ -z "${to}" ]; then
-      echo "A link must be in the form <from>:<to>"
-      exit 1
-    else
-      ln -f -s -T "${from}" "${to}"
-    fi
+  to="${link#*:}"
+  if [ "${to}" = "${WORDPRESS_DIR}/wp-content/uploads" ]; then
+    uploads_link_found=true
   fi
 done
 
-# Fill out the templates
-for f in /etc/nginx/**/*.mo; do
-  /usr/local/bin/mo "${f}" > "${f%.mo}"
-  rm "${f}"
-done
-
-# if the user has ssl keys, configure nginx with ssl
-if [ -f /etc/nginx/certs/ssl.key -a -f /etc/nginx/certs/ssl.crt ]; then
-  ln -s /etc/nginx/sites-available/ssl.conf /etc/nginx/sites-enabled/default.conf
-else
-  ln -s /etc/nginx/sites-available/default.conf /etc/nginx/sites-enabled/default.conf
+if [ "${uploads_link_found}" = "false" ]; then
+  if [ -z "${WORDPRESS_UPLOADS_DIR}" ] ||
+       [ ! -d "${WORDPRESS_UPLOADS_DIR}" ]; then
+    echo "You need to specify a shared link to a uploads folder by specifying WORDPRESS_UPLOADS_DIR"
+    exit 1
+  else
+    # The user gave a WORDPRESS_UPLOADS_DIR, create a link
+    export NGINX_SHARED_LINK_WORDPRESS_UPLOADS_DIR="${WORDPRESS_UPLOADS_DIR}:${WORDPRESS_DIR}/wp-content/uploads"
+  fi
 fi
 
-exec "$@"
+# Enable the memcached upstream if a memcached addr is specified
+if [ -n "${MEMCACHED_ADDR}" ]; then
+  memcached_upstream_conf_file="/etc/nginx/sites-available/memcached_upstream.conf.mo"
+  /usr/local/bin/mo "${memcached_upstream_conf_file}" > "${memcached_upstream_conf_file%.mo}"
+  rm "${memcached_upstream_conf_file%.mo}"
+  ln -s /etc/nginx/sites-available/memcached_upstream.conf /etc/nginx/sites-enabled
+fi
+
+exec /nginx-php-entrypoint.sh "$@"

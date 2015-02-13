@@ -24,7 +24,7 @@ fi
 if [ -n "${WORDPRESS_UPLOADS_DIR}" ]; then
   # Give this a special prefix so that it overwrites previous symlinks that
   # might be set by the normal "SYMLINK_*" variables
-  __WORDPRESS_SYMLINK="${WORDPRESS_UPLOADS_DIR} => ${WORDPRESS_DIR}/wp-content/uploads"
+  __WORDPRESS_SYMLINK_UPLOADS="${WORDPRESS_UPLOADS_DIR} => ${WORDPRESS_DIR}/wp-content/uploads"
 fi
 
 . /helpers/links.sh
@@ -39,12 +39,12 @@ auto_symlink "__WORDPRESS"
 #
 if [ ! -L "${WORDPRESS_DIR}/wp-content/uploads" ]; then
   # If the uploads directory isn't a link, check to see
-  echo "You need to specify a shared link to a uploads folder by specifying WORDPRESS_UPLOADS_DIR"
+  echo "You need to specify the path for storing uploads by specifying WORDPRESS_UPLOADS_DIR"
   exit 1
 fi
 
 # Enable the memcached upstream if a memcached addr is specified
-if [ -n "${MEMCACHED_ADDR}" ]; then
+if [ -n "${MEMCACHED_ADDR}" ] && [ -n "${MEMCACHED_PORT}" ]; then
   memcached_upstream_conf_file="/etc/nginx/sites-available/memcached_upstream.conf.mo"
   /usr/local/bin/mo "${memcached_upstream_conf_file}" > "${memcached_upstream_conf_file%.mo}"
   rm "${memcached_upstream_conf_file}"

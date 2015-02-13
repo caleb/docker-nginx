@@ -47,5 +47,5 @@ location ~ (\.php) {
     fastcgi_param	SSL_SESSION_ID    $ssl_session_id if_not_empty;
     fastcgi_param	SSL_CLIENT_VERIFY $ssl_client_verify if_not_empty;
 
-    fastcgi_pass {{PHP_FPM_ADDR}};
+    fastcgi_pass {{PHP_FPM_ADDR}}:{{PHP_FPM_PORT}};
 }

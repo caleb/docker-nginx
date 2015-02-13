@@ -21,34 +21,32 @@ if [ -z "${WORDPRESS_DIR}" ] || [ ! -d "${WORDPRESS_DIR}" ] || [ ! -d "${WORDPRE
   exit 1
 fi
 
+if [ -n "${WORDPRESS_UPLOADS_DIR}" ]; then
+  # Give this a special prefix so that it overwrites previous symlinks that might be set by the normal "SYMLINK_*" variables
+  __WORDPRESS_SYMLINK="${WORDPRESS_UPLOADS_DIR} => ${WORDPRESS_DIR}/wp-content/uploads"
+fi
+
+. /helpers/links.sh
+. /helpers/auto_symlink.sh
+
+read_link MEMCACHED memcached 11211 tcp
+auto_symlink
+auto_symlink "__WORDPRESS"
+
 #
 # Check that the uploads directory is linked outside of the wordpress project
 #
-uploads_link_found=false
-for link_var in ${!NGINX_SHARED_LINK*}; do
-  link="${!link_var}"
-  to="${link#*:}"
-  if [ "${to}" = "${WORDPRESS_DIR}/wp-content/uploads" ]; then
-    uploads_link_found=true
-  fi
-done
-
-if [ "${uploads_link_found}" = "false" ]; then
-  if [ -z "${WORDPRESS_UPLOADS_DIR}" ] ||
-       [ ! -d "${WORDPRESS_UPLOADS_DIR}" ]; then
-    echo "You need to specify a shared link to a uploads folder by specifying WORDPRESS_UPLOADS_DIR"
-    exit 1
-  else
-    # The user gave a WORDPRESS_UPLOADS_DIR, create a link
-    export NGINX_SHARED_LINK_WORDPRESS_UPLOADS_DIR="${WORDPRESS_UPLOADS_DIR}:${WORDPRESS_DIR}/wp-content/uploads"
-  fi
+if [ ! -L "${WORDPRESS_DIR}/wp-content/uploads" ]; then
+  # If the uploads directory isn't a link, check to see
+  echo "You need to specify a shared link to a uploads folder by specifying WORDPRESS_UPLOADS_DIR"
+  exit 1
 fi
 
 # Enable the memcached upstream if a memcached addr is specified
 if [ -n "${MEMCACHED_ADDR}" ]; then
   memcached_upstream_conf_file="/etc/nginx/sites-available/memcached_upstream.conf.mo"
   /usr/local/bin/mo "${memcached_upstream_conf_file}" > "${memcached_upstream_conf_file%.mo}"
-  rm "${memcached_upstream_conf_file%.mo}"
+  rm "${memcached_upstream_conf_file}"
   ln -s /etc/nginx/sites-available/memcached_upstream.conf /etc/nginx/sites-enabled
 fi
 

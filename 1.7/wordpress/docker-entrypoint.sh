@@ -22,7 +22,8 @@ if [ -z "${WORDPRESS_DIR}" ] || [ ! -d "${WORDPRESS_DIR}" ] || [ ! -d "${WORDPRE
 fi
 
 if [ -n "${WORDPRESS_UPLOADS_DIR}" ]; then
-  # Give this a special prefix so that it overwrites previous symlinks that might be set by the normal "SYMLINK_*" variables
+  # Give this a special prefix so that it overwrites previous symlinks that
+  # might be set by the normal "SYMLINK_*" variables
   __WORDPRESS_SYMLINK="${WORDPRESS_UPLOADS_DIR} => ${WORDPRESS_DIR}/wp-content/uploads"
 fi
 

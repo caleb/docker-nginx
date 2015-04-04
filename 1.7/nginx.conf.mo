@@ -38,5 +38,6 @@ http {
   client_max_body_size {{NGINX_MAX_BODY_SIZE}};
   client_body_timeout {{NGINX_BODY_TIMEOUT}};
 
+  include /etc/nginx/upstreams/*.conf;
   include /etc/nginx/sites-enabled/*.conf;
 }

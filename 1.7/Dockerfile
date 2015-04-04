@@ -12,10 +12,12 @@ RUN mkdir -p /helpers \
 && mkdir -p /etc/nginx/sites-enabled \
 && rm -rf /etc/nginx/conf.d
 
+RUN mkdir -p /etc/nginx/upstreams \
+&&  mkdir -p /etc/nginx/handlers
+
 COPY nginx.conf.mo   /etc/nginx/nginx.conf.mo
 COPY sites-available /etc/nginx/sites-available
 COPY include         /etc/nginx/include
-COPY handlers        /etc/nginx/handlers
 
 COPY docker-entrypoint.sh /nginx-entrypoint.sh
 

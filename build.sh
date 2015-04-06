@@ -1,11 +1,19 @@
 #!/usr/bin/env bash
 
 echo "Building nginx:1.7"
-docker build -t docker.rodeopartners.com/nginx:1.7 1.7
+cd 1.7
+./build.sh
+cd ..
+docker tag -f docker.rodeopartners.com/nginx:1.7 docker.rodeopartners.com/nginx:latest
 
 echo "Building nginx:1.7-php"
-docker build -t docker.rodeopartners.com/nginx:1.7-php 1.7/php
+cd 1.7/php
+./build.sh
+cd ../..
+docker tag -f docker.rodeopartners.com/nginx:1.7-php docker.rodeopartners.com/nginx:latest-php
 
 echo "Building nginx:1.7-wordpress"
-docker build -t docker.rodeopartners.com/nginx:1.7-wordpress 1.7/wordpress
-
+cd 1.7/wordpress
+./build.sh
+cd ../..
+docker tag -f docker.rodeopartners.com/nginx:1.7-wordpress docker.rodeopartners.com/nginx:latest-wordpress

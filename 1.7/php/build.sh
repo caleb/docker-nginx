@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
 
-dir="$(dirname $0)"
-docker build -t docker.rodeopartners.com/nginx:1.7-php "${dir}"
+NO_CACHE="${1:-false}"
+
+docker build -no-cache=$NO_CACHE -t docker.rodeopartners.com/nginx:1.7-php .

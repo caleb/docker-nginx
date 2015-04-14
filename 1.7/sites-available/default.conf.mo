@@ -6,5 +6,5 @@ server {
   
   root {{NGINX_ROOT}};
 
-  include /etc/nginx/handlers/*.conf;
+  include /etc/nginx/handlers-enabled/*.conf;
 }

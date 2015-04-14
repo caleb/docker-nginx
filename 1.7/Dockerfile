@@ -13,12 +13,14 @@ RUN mkdir -p /helpers \
 &&  rm /tmp/helpers.tar.gz
 
 # Install the base system
-RUN /bin/bash /helpers/install-base.sh
+RUN /bin/bash /helpers/install_base.sh
 
 RUN mkdir -p /etc/nginx/sites-enabled \
 &&  rm -rf /etc/nginx/conf.d \
-&&  mkdir -p /etc/nginx/upstreams \
-&&  mkdir -p /etc/nginx/handlers
+&&  mkdir -p /etc/nginx/upstreams-enabled \
+&&  mkdir -p /etc/nginx/upstreams-available \
+&&  mkdir -p /etc/nginx/handlers-enabled \
+&&  mkdir -p /etc/nginx/handlers-available
 
 COPY nginx.conf.mo   /etc/nginx/nginx.conf.mo
 COPY sites-available /etc/nginx/sites-available

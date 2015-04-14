@@ -9,7 +9,7 @@ server {
   
   root {{NGINX_ROOT}};
 
-  include /etc/nginx/handlers/*.conf;
+  include /etc/nginx/handlers-enabled/*.conf;
 }
 
 include /etc/nginx/include/http-to-https-redirect.conf;

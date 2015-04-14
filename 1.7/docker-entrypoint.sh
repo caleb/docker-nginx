@@ -46,7 +46,7 @@ for var in ${!UPSTREAM_*}; do
   fi
 
   # Create the upstream in sites-available
-  cat > "/etc/nginx/upstreams/${upstream_link}.conf.mo" <<EOF
+  cat > "/etc/nginx/upstreams-enabled/${upstream_link}.conf.mo" <<EOF
 upstream ${upstream_link} {
   server ${upstream_link}:{{${upstream_prefix}_PORT}}${upstream_args};
 }

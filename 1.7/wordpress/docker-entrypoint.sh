@@ -45,10 +45,10 @@ fi
 
 # Enable the memcached upstream if a memcached addr is specified
 if [ -n "${MEMCACHED_ADDR}" ] && [ -n "${MEMCACHED_PORT}" ]; then
-  memcached_upstream_conf_file="/etc/nginx/sites-available/memcached_upstream.conf.mo"
+  memcached_upstream_conf_file="/etc/nginx/upstreams-available/memcached_upstream.conf.mo"
   /usr/local/bin/mo "${memcached_upstream_conf_file}" > "${memcached_upstream_conf_file%.mo}"
   rm "${memcached_upstream_conf_file}"
-  ln -s /etc/nginx/sites-available/memcached_upstream.conf /etc/nginx/sites-enabled
+  ln -s /etc/nginx/upstreams-available/memcached_upstream.conf /etc/nginx/upstreams-enabled
 fi
 
 exec /nginx-php-entrypoint.sh "$@"

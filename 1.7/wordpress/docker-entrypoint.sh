@@ -28,11 +28,11 @@ if [ -n "${WORDPRESS_UPLOADS_DIR}" ]; then
 fi
 
 . /helpers/links.sh
-. /helpers/auto_symlink.sh
+. /helpers/auto-symlink.sh
 
-read_link MEMCACHED memcached 11211 tcp
-auto_symlink
-auto_symlink "__WORDPRESS"
+read-link MEMCACHED memcached 11211 tcp
+auto-symlink
+auto-symlink "__WORDPRESS"
 
 #
 # Check that the uploads directory is linked outside of the wordpress project

@@ -3,8 +3,8 @@ set -e
 shopt -s globstar nullglob
 
 . /helpers/links.sh
-. /helpers/auto_symlink.sh
-auto_symlink
+. /helpers/auto-symlink.sh
+auto-symlink
 
 export NGINX_ROOT
 export NGINX_SERVER_NAME
@@ -38,7 +38,7 @@ for var in ${!UPSTREAM_*}; do
 
   upstream_prefix="${upstream_link^^}"
 
-  read_link "${upstream_prefix}" "${upstream_link}"
+  read-link "${upstream_prefix}" "${upstream_link}"
 
   if [ -z "${upstream_prefix}_ADDR" ] && [ -z "${upstream_prefix}_PORT" ]; then
     echo "You specified an upstream ${var} but a link by the name ${upstream_link} doesn't exist, or doesn't expose any ports" >&2

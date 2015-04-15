@@ -13,7 +13,7 @@ export WORDPRESS_UPLOADS_DIR
 : ${MEMCACHED_PORT:=11211}
 
 if [ -z "${NGINX_ROOT}" ]; then
-  NGINX_ROOT="${WORDPRESS_DIR}"
+  export NGINX_ROOT="${WORDPRESS_DIR}"
 fi
 
 if [ -z "${WORDPRESS_DIR}" ] || [ ! -d "${WORDPRESS_DIR}" ] || [ ! -d "${WORDPRESS_DIR}/wp-admin" ]; then

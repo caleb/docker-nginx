@@ -17,7 +17,7 @@ if [ -z "${NGINX_ROOT}" ]; then
 fi
 
 if [ -z "${WORDPRESS_DIR}" ] || [ ! -d "${WORDPRESS_DIR}" ] || [ ! -d "${WORDPRESS_DIR}/wp-admin" ]; then
-  echo "Either WORDPRESS_DIR isn't set, or doesn't point to a wordpress directory"
+  echo "Either WORDPRESS_DIR isn't set, or doesn't point to a wordpress directory (i.e. one that contains a wp-admin directory)"
   exit 1
 fi
 

@@ -67,9 +67,9 @@ done
 if [ -z "${NGINX_SKIP_DEFAULT_SITE}" ]; then
   # if the user has ssl keys, configure nginx with ssl
   if [ -f /etc/nginx/certs/ssl.key -a -f /etc/nginx/certs/ssl.crt ]; then
-    ln -s /etc/nginx/sites-available/ssl.conf /etc/nginx/sites-enabled/ssl.conf
+    ln -sf /etc/nginx/sites-available/ssl.conf /etc/nginx/sites-enabled/ssl.conf
   else
-    ln -s /etc/nginx/sites-available/default.conf /etc/nginx/sites-enabled/default.conf
+    ln -sf /etc/nginx/sites-available/default.conf /etc/nginx/sites-enabled/default.conf
   fi
 fi
 

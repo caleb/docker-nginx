@@ -44,7 +44,7 @@ if [ ! -L "${WORDPRESS_DIR}/wp-content/uploads" ]; then
 fi
 
 # Enable the memcached upstream if a memcached addr is specified
-if [ -n "${MEMCACHED_ADDR}" ] && [ -n "${MEMCACHED_PORT}" ]; then
+if [ -n "${MEMCACHED_ADDR}" ] && [ -n "${MEMCACHED_PORT}" ] && [ -f /etc/nginx/upstreams-available/memcached_upstream.conf.mo ]; then
   memcached_upstream_conf_file="/etc/nginx/upstreams-available/memcached_upstream.conf.mo"
   /usr/local/bin/mo "${memcached_upstream_conf_file}" > "${memcached_upstream_conf_file%.mo}"
   rm "${memcached_upstream_conf_file}"

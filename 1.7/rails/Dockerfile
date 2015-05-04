@@ -1,0 +1,10 @@
+FROM docker.rodeopartners.com/nginx:1.7
+
+MAINTAINER Caleb Land <caleb@land.fm>
+
+COPY handlers-enabled/*   /etc/nginx/handlers-enabled/
+COPY docker-entrypoint.sh /nginx-rails-entrypoint.sh
+
+ENTRYPOINT ["/nginx-rails-entrypoint.sh"]
+
+CMD ["nginx", "-g", "daemon off;"]

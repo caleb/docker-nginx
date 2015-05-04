@@ -19,3 +19,9 @@ cd 1.7/wordpress
 ./build.sh $NO_CACHE
 cd ../..
 docker tag -f docker.rodeopartners.com/nginx:1.7-wordpress docker.rodeopartners.com/nginx:latest-wordpress
+
+echo "Building nginx:1.7-rails"
+cd 1.7/rails
+./build.sh $NO_CACHE
+cd ../..
+docker tag -f docker.rodeopartners.com/nginx:1.7-rails docker.rodeopartners.com/nginx:latest-rails

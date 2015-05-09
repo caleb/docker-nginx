@@ -12,12 +12,14 @@ export NGINX_CANONICAL_NAME
 export NGINX_WORKER_PROCESSES
 export NGINX_MAX_BODY_SIZE
 export NGINX_BODY_TIMEOUT
+export NGINX_SENDFILE
 
 : ${NGINX_ROOT:=/srv}
 : ${NGINX_SERVER_NAME:=localhost}
 : ${NGINX_WORKER_PROCESSES:=3}
 : ${NGINX_MAX_BODY_SIZE:=1m}
 : ${NGINX_BODY_TIMEOUT:=60s}
+: ${NGINX_SENDFILE:=off}
 
 # Look for upstreams and link them for easy access
 if [ -n "${UPSTREAM}" ]; then

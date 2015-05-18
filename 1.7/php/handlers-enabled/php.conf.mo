@@ -3,9 +3,9 @@
 location ~ (\.php) {
     try_files $uri =404;
 
-    {{#PHP_FPM_CLIENT_MAX_BODY_SIZE}}
-    client_max_body_size {{PHP_FPM_CLIENT_MAX_BODY_SIZE}};
-    {{/PHP_FPM_CLIENT_MAX_BODY_SIZE}}
+    {{#NGINX_PHP_CLIENT_MAX_BODY_SIZE}}
+    client_max_body_size {{NGINX_PHP_CLIENT_MAX_BODY_SIZE}};
+    {{/NGINX_PHP_CLIENT_MAX_BODY_SIZE}}
 
     fastcgi_index                   index.php;
     fastcgi_connect_timeout         10;

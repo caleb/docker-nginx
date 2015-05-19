@@ -2,15 +2,13 @@
 set -e
 shopt -s globstar
 
-export MEMCACHED_ADDR
-export MEMCACHED_PORT
-export WORDPRESS_DIR
-export WORDPRESS_UPLOADS_DIR
+. /helpers/vars.sh
+. /helpers/links.sh
+. /helpers/auto-symlink.sh
 
-: ${WORDPRESS_DIR:=/srv/wordpress}
-: ${WORDPRESS_UPLOADS_DIR:=/uploads}
-: ${MEMCACHED_ADDR:=}
-: ${MEMCACHED_PORT:=11211}
+read-var USE_MEMCACHED         -- no
+read-var WORDPRESS_DIR         -- /srv/wordpress
+read-var WORDPRESS_UPLOADS_DIR -- /uploads
 
 if [ -z "${NGINX_ROOT}" ]; then
   export NGINX_ROOT="${WORDPRESS_DIR}"
@@ -27,10 +25,6 @@ if [ -n "${WORDPRESS_UPLOADS_DIR}" ]; then
   __WORDPRESS_SYMLINK_UPLOADS="${WORDPRESS_UPLOADS_DIR} => ${WORDPRESS_DIR}/wp-content/uploads"
 fi
 
-. /helpers/links.sh
-. /helpers/auto-symlink.sh
-
-read-link MEMCACHED memcached 11211 tcp
 auto-symlink
 auto-symlink "__WORDPRESS"
 
@@ -43,12 +37,16 @@ if [ ! -L "${WORDPRESS_DIR}/wp-content/uploads" ]; then
   exit 1
 fi
 
-# Enable the memcached upstream if a memcached addr is specified
-if [ -n "${MEMCACHED_ADDR}" ] && [ -n "${MEMCACHED_PORT}" ] && [ -f /etc/nginx/upstreams-available/memcached_upstream.conf.mo ]; then
-  memcached_upstream_conf_file="/etc/nginx/upstreams-available/memcached_upstream.conf.mo"
-  /usr/local/bin/mo "${memcached_upstream_conf_file}" > "${memcached_upstream_conf_file%.mo}"
-  rm "${memcached_upstream_conf_file}"
-  ln -s /etc/nginx/upstreams-available/memcached_upstream.conf /etc/nginx/upstreams-enabled
+if [ "${WITH_MEMCACHED,,}" = "yes"] || [ "${WITH_MEMCACHED,,}" = "true"]; then
+  read-link MEMCACHED memcached 11211 tcp
+
+  # Enable the memcached upstream if a memcached addr is specified
+  if [ -n "${MEMCACHED_ADDR}" ] && [ -n "${MEMCACHED_PORT}" ] && [ -f /etc/nginx/upstreams-available/memcached_upstream.conf.mo ]; then
+    memcached_upstream_conf_file="/etc/nginx/upstreams-available/memcached_upstream.conf.mo"
+    /usr/local/bin/mo "${memcached_upstream_conf_file}" > "${memcached_upstream_conf_file%.mo}"
+    rm "${memcached_upstream_conf_file}"
+    ln -s /etc/nginx/upstreams-available/memcached_upstream.conf /etc/nginx/upstreams-enabled
+  fi
 fi
 
 exec /nginx-php-entrypoint.sh "$@"

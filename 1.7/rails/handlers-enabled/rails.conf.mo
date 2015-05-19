@@ -23,7 +23,7 @@ location @app {
   # redirects, we set the Host: header above already.
   proxy_redirect off;
 
-  proxy_pass http://unicorn;
+  proxy_pass http://{{RAILS_UPSTREAM}};
 }
 
 # Rails error pages

@@ -2,33 +2,36 @@
 set -e
 shopt -s globstar nullglob
 
+. /helpers/vars.sh
 . /helpers/links.sh
 . /helpers/auto-symlink.sh
 auto-symlink
 
-export NGINX_ROOT
-export NGINX_SERVER_NAME
-export NGINX_CANONICAL_NAME
-export NGINX_WORKER_PROCESSES
-export NGINX_MAX_BODY_SIZE
-export NGINX_BODY_TIMEOUT
-export NGINX_SENDFILE
+read-var NGINX_ROOT             -- /srv
+read-var NGINX_SERVER_NAME      -- localhost
+read-var NGINX_WORKER_PROCESSES -- 3
+read-var NGINX_MAX_BODY_SIZE    -- 1m
+read-var NGINX_BODY_TIMEOUT     -- 60s
+read-var NGINX_SENDFILE         -- off
 
-: ${NGINX_ROOT:=/srv}
-: ${NGINX_SERVER_NAME:=localhost}
-: ${NGINX_WORKER_PROCESSES:=3}
-: ${NGINX_MAX_BODY_SIZE:=1m}
-: ${NGINX_BODY_TIMEOUT:=60s}
-: ${NGINX_SENDFILE:=off}
+read-var NGINX_CANONICAL_NAME   --
 
 # Look for upstreams and link them for easy access
 if [ -n "${UPSTREAM}" ]; then
-  export UPSTREAM__DEFAULT__="${UPSTREAM}"
+  # the upstream name will be __default__, which is why we have 3 underscores
+  export UPSTREAM___DEFAULT__="${UPSTREAM}"
 fi
 
 for var in ${!UPSTREAM_*}; do
+  upstream_name="${var#UPSTREAM_}"
+  upstream_name="${upstream_name,,}"
+
   upstream_value="${!var}"
   upstream_link="${upstream_value%% *}"
+
+  upstream_prefix="${var}"
+  port_var="${upstream_prefix}_PORT"
+  addr_var="${upstream_prefix}_ADDR"
 
   # If length of the whole value is the same as the link name part, then the user
   # didn't provide any extra arguments
@@ -38,18 +41,26 @@ for var in ${!UPSTREAM_*}; do
     upstream_args=""
   fi
 
-  upstream_prefix="${upstream_link^^}"
+  # Extract the port out of the link_name if specified
+  if [[ "${upstream_link}" =~ ^([^:]*):(\d+)$ ]]; then
+    upstream_link="${BASH_REMATCH[1]}"
+    upstream_port="${BASH_REMATCH[2]}"
+  fi
 
-  read-link "${upstream_prefix}" "${upstream_link}"
+  if [ -n "${upstream_port}" ]; then
+    read-link "${upstream_prefix}" "${upstream_link}" "${upstream_port}" tcp
+  else
+    read-link "${upstream_prefix}" "${upstream_link}"
+  fi
 
-  if [ -z "${upstream_prefix}_ADDR" ] && [ -z "${upstream_prefix}_PORT" ]; then
+  if [ -z "${!addr_var}" ] && [ -z "${!port_var}" ]; then
     echo "You specified an upstream ${var} but a link by the name ${upstream_link} doesn't exist, or doesn't expose any ports" >&2
     exit 1
   fi
 
   # Create the upstream in sites-available
-  cat > "/etc/nginx/upstreams-enabled/${upstream_link}.conf.mo" <<EOF
-upstream ${upstream_link} {
+  cat > "/etc/nginx/upstreams-enabled/${upstream_name,,}.conf.mo" <<EOF
+upstream ${upstream_name} {
   server ${upstream_link}:{{${upstream_prefix}_PORT}}${upstream_args};
 }
 EOF

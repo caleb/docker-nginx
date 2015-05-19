@@ -6,7 +6,7 @@ shopt -s globstar
 . /helpers/links.sh
 . /helpers/auto-symlink.sh
 
-read-var USE_MEMCACHED         -- no
+read-var WITH_MEMCACHED         -- no
 read-var WORDPRESS_DIR         -- /srv/wordpress
 read-var WORDPRESS_UPLOADS_DIR -- /uploads
 

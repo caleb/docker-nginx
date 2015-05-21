@@ -42,7 +42,7 @@ for var in ${!UPSTREAM_*}; do
   fi
 
   # Extract the port out of the link_name if specified
-  if [[ "${upstream_link}" =~ ^([^:]*):(\d+)$ ]]; then
+  if [[ "${upstream_link}" =~ ^([^:]*):([[:digit:]]+)$ ]]; then
     upstream_link="${BASH_REMATCH[1]}"
     upstream_port="${BASH_REMATCH[2]}"
   fi

@@ -1,6 +1,17 @@
 #!/usr/bin/env bash
 
 docker push docker.rodeopartners.com/nginx:1.7
-docker push docker.rodeopartners.com/nginx:1.7-php
-docker push docker.rodeopartners.com/nginx:1.7-wordpress
-docker push docker.rodeopartners.com/nginx:1.7-rails
+docker push docker.rodeopartners.com/nginx:1.9
+docker push docker.rodeopartners.com/nginx:latest
+
+cd php
+./push.sh
+cd ..
+
+cd wordpress
+./push.sh
+cd ..
+
+cd rails
+./push.sh
+cd ..

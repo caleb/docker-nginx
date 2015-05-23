@@ -1,0 +1,11 @@
+FROM docker.rodeopartners.com/nginx:1.9-php
+
+MAINTAINER Caleb Land <caleb@land.fm>
+
+COPY handlers-enabled/*    /etc/nginx/handlers-enabled/
+COPY upstreams-available/* /etc/nginx/upstreams-available/
+COPY docker-entrypoint.sh  /nginx-wordpress-entrypoint.sh
+
+ENTRYPOINT ["/nginx-wordpress-entrypoint.sh"]
+
+CMD ["nginx", "-g", "daemon off;"]

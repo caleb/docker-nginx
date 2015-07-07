@@ -37,7 +37,7 @@ if [ ! -L "${WORDPRESS_DIR}/wp-content/uploads" ]; then
   exit 1
 fi
 
-if [ "${WITH_MEMCACHED,,}" = "yes"] || [ "${WITH_MEMCACHED,,}" = "true"]; then
+if [ "${WITH_MEMCACHED,,}" = "yes" ] || [ "${WITH_MEMCACHED,,}" = "true" ]; then
   read-link MEMCACHED memcached 11211 tcp
 
   # Enable the memcached upstream if a memcached addr is specified

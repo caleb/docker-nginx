@@ -22,6 +22,9 @@ RUN mkdir -p /etc/nginx/sites-enabled \
 &&  mkdir -p /etc/nginx/handlers-enabled \
 &&  mkdir -p /etc/nginx/handlers-available
 
+# Remove the nginx configuration so when run the entrypoint a new one is created
+RUN rm -f /etc/nginx/nginx.conf
+
 COPY nginx.conf.mo   /etc/nginx/nginx.conf.mo
 COPY sites-available /etc/nginx/sites-available
 COPY include         /etc/nginx/include

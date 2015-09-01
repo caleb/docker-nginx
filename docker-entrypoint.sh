@@ -73,13 +73,17 @@ fi
 
 # Fill out the templates
 for f in /etc/nginx/**/*.mo; do
-  /usr/local/bin/mo "${f}" > "${f%.mo}"
+  # Don't overwrite files that already exist
+  if [ ! -f "${f%*.mo}" ]; then
+    /usr/local/bin/mo "${f}" > "${f%.mo}"
+  fi
+
   rm "${f}"
 done
 
 if [ -z "${NGINX_SKIP_DEFAULT_SITE}" ]; then
   # if the user has ssl keys, configure nginx with ssl
-  if [ -f /etc/nginx/certs/ssl.key -a -f /etc/nginx/certs/ssl.crt ]; then
+  if [ -f /etc/nginx/certs/ssl.key ] && [ -f /etc/nginx/certs/ssl.crt ]; then
     ln -sf /etc/nginx/sites-available/ssl.conf /etc/nginx/sites-enabled/ssl.conf
   else
     ln -sf /etc/nginx/sites-available/default.conf /etc/nginx/sites-enabled/default.conf

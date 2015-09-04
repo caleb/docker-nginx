@@ -13,6 +13,7 @@ read-var NGINX_WORKER_PROCESSES -- 3
 read-var NGINX_MAX_BODY_SIZE    -- 1m
 read-var NGINX_BODY_TIMEOUT     -- 60s
 read-var NGINX_SENDFILE         -- off
+read-var NGINX_AUTOINDEX        -- off
 
 read-var NGINX_CANONICAL_NAME   --
 
@@ -74,7 +75,7 @@ fi
 # Fill out the templates
 for f in /etc/nginx/**/*.mo; do
   # Don't overwrite files that already exist
-  if [ ! -f "${f%*.mo}" ]; then
+  if [ ! -f "${f%.mo}" ]; then
     /usr/local/bin/mo "${f}" > "${f%.mo}"
   fi
 

@@ -48,15 +48,21 @@ for var in ${!UPSTREAM_*}; do
     upstream_port="${BASH_REMATCH[2]}"
   fi
 
-  if [ -n "${upstream_port}" ]; then
-    read-link "${upstream_prefix}" "${upstream_link}" "${upstream_port}" tcp
+  # If the upstream link contains a dot, assume it's a domain name and not a link
+  if [[ "${upstream_link}" =~ \. ]]; then
+    # Set the port variable to be consistent with containers looked up by links
+    eval "${upstream_prefix}_PORT=${upstream_port}"
   else
-    read-link "${upstream_prefix}" "${upstream_link}"
-  fi
+    if [ -n "${upstream_port}" ]; then
+      read-link "${upstream_prefix}" "${upstream_link}" "${upstream_port}" tcp
+    else
+      read-link "${upstream_prefix}" "${upstream_link}"
+    fi
 
-  if [ -z "${!addr_var}" ] && [ -z "${!port_var}" ]; then
-    echo "You specified an upstream ${var} but a link by the name ${upstream_link} doesn't exist, or doesn't expose any ports" >&2
-    exit 1
+    if [ -z "${!addr_var}" ] && [ -z "${!port_var}" ]; then
+      echo "You specified an upstream ${var} but a link by the name ${upstream_link} doesn't exist, or doesn't expose any ports" >&2
+      exit 1
+    fi
   fi
 
   # Create the upstream in sites-available

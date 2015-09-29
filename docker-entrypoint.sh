@@ -30,10 +30,6 @@ for var in ${!UPSTREAM_*}; do
   upstream_value="${!var}"
   upstream_link="${upstream_value%% *}"
 
-  upstream_prefix="${var}"
-  port_var="${upstream_prefix}_PORT"
-  addr_var="${upstream_prefix}_ADDR"
-
   # If length of the whole value is the same as the link name part, then the user
   # didn't provide any extra arguments
   if [ "${#upstream_link}" -ne "${#upstream_value}" ]; then
@@ -49,10 +45,11 @@ for var in ${!UPSTREAM_*}; do
   fi
 
   # If the upstream link contains a dot, assume it's a domain name and not a link
-  if [[ "${upstream_link}" =~ \. ]]; then
-    # Set the port variable to be consistent with containers looked up by links
-    eval "${upstream_prefix}_PORT=${upstream_port}"
-  else
+  if [[ ! "${upstream_link}" =~ \. ]]; then
+    upstream_prefix="${upstream_link^^}"
+    port_var="${upstream_prefix}_PORT"
+    addr_var="${upstream_prefix}_ADDR"
+
     if [ -n "${upstream_port}" ]; then
       read-link "${upstream_prefix}" "${upstream_link}" "${upstream_port}" tcp
     else
@@ -62,13 +59,16 @@ for var in ${!UPSTREAM_*}; do
     if [ -z "${!addr_var}" ] && [ -z "${!port_var}" ]; then
       echo "You specified an upstream ${var} but a link by the name ${upstream_link} doesn't exist, or doesn't expose any ports" >&2
       exit 1
+    else
+      # Read the port from the link
+      upstream_port="${!port_var}"
     fi
   fi
 
   # Create the upstream in sites-available
-  cat > "/etc/nginx/upstreams-enabled/${upstream_name,,}.conf.mo" <<EOF
+  cat > "/etc/nginx/upstreams-enabled/${upstream_name,,}.conf" <<EOF
 upstream ${upstream_name} {
-  server ${upstream_link}:{{${upstream_prefix}_PORT}}${upstream_args};
+  server ${upstream_link}:${upstream_port}${upstream_args};
 }
 EOF
 done

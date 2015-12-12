@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-docker run -it --rm docker.rodeopartners.com/nginx:1.7-wordpress "$@"
+docker run -it --rm caleb/nginx:1.7-wordpress "$@"

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-docker push docker.rodeopartners.com/nginx:1.7
-docker push docker.rodeopartners.com/nginx:1.9
-docker push docker.rodeopartners.com/nginx:latest
+docker push caleb/nginx:1.7
+docker push caleb/nginx:1.9
+docker push caleb/nginx:latest
 
 cd php
 ./push.sh

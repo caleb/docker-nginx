@@ -2,10 +2,10 @@
 
 NO_CACHE="${1:-false}"
 
-docker build --no-cache=$NO_CACHE -t docker.rodeopartners.com/nginx:1.7 -f Dockerfile-1.7 .
-docker build --no-cache=$NO_CACHE -t docker.rodeopartners.com/nginx:1.9 -f Dockerfile-1.9 .
+docker build --no-cache=$NO_CACHE -t caleb/nginx:1.7 -f Dockerfile-1.7 .
+docker build --no-cache=$NO_CACHE -t caleb/nginx:1.9 -f Dockerfile-1.9 .
 
-docker tag -f docker.rodeopartners.com/nginx:1.9 docker.rodeopartners.com/nginx:latest
+docker tag -f caleb/nginx:1.9 caleb/nginx:latest
 
 cd php
 ./build.sh $NO_CACHE

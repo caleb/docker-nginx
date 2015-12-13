@@ -44,7 +44,7 @@ for var in ${!UPSTREAM_*}; do
     upstream_port="${BASH_REMATCH[2]}"
   fi
 
-  upstream_prefix="${upstream_link^^}"
+  upstream_prefix="${upstream_name^^}"
   require-link "${upstream_prefix}" "${upstream_link}" "${upstream_port}" tcp
 
   # Create the upstream in sites-available

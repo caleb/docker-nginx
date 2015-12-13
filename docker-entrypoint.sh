@@ -44,26 +44,8 @@ for var in ${!UPSTREAM_*}; do
     upstream_port="${BASH_REMATCH[2]}"
   fi
 
-  # If the upstream link contains a dot, assume it's a domain name and not a link
-  if [[ ! "${upstream_link}" =~ \. ]]; then
-    upstream_prefix="${upstream_link^^}"
-    port_var="${upstream_prefix}_PORT"
-    addr_var="${upstream_prefix}_ADDR"
-
-    if [ -n "${upstream_port}" ]; then
-      read-link "${upstream_prefix}" "${upstream_link}" "${upstream_port}" tcp
-    else
-      read-link "${upstream_prefix}" "${upstream_link}"
-    fi
-
-    if [ -z "${!addr_var}" ] && [ -z "${!port_var}" ]; then
-      echo "You specified an upstream ${var} but a link by the name ${upstream_link} doesn't exist, or doesn't expose any ports" >&2
-      exit 1
-    else
-      # Read the port from the link
-      upstream_port="${!port_var}"
-    fi
-  fi
+  upstream_prefix="${upstream_link^^}"
+  require-link "${upstream_prefix}" "${upstream_link}" "${upstream_port}" tcp
 
   # Create the upstream in sites-available
   cat > "/etc/nginx/upstreams-enabled/${upstream_name,,}.conf" <<EOF

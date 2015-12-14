@@ -17,6 +17,10 @@ read-var NGINX_AUTOINDEX        -- off
 
 read-var NGINX_CANONICAL_NAME   --
 
+if [ "${WITH_RSYSLOG,,}" = "true" ] || [ "${WITH_RSYSLOG,,}" = "yes" ]; then
+  require-link RSYSLOG rsyslog 514 udp
+fi
+
 # Look for upstreams and link them for easy access
 if [ -n "${UPSTREAM}" ]; then
   # the upstream name will be __default__, which is why we have 3 underscores

@@ -1,7 +1,12 @@
 user nginx;
 worker_processes {{NGINX_WORKER_PROCESSES}};
 
+{{#RSYSLOG_ADDR}}
+error_log syslog:server={{RSYSLOG_ADDR}}:{{RSYSLOG_PORT}} warn;
+{{/RSYSLOG_ADDR}}
+{{^RSYSLOG_ADDR}}
 error_log /var/log/nginx/error.log warn;
+{{/RSYSLOG_ADDR}}
 pid       /var/run/nginx.pid;
 
 events {
@@ -16,7 +21,12 @@ http {
   '$status $body_bytes_sent "$http_referer" '
   '"$http_user_agent" "$http_x_forwarded_for"';
 
+  {{#RSYSLOG_ADDR}}
+  access_log syslog:server={{RSYSLOG_ADDR}}:{{RSYSLOG_PORT}}  main;
+  {{/RSYSLOG_ADDR}}
+  {{^RSYSLOG_ADDR}}
   access_log /var/log/nginx/access.log  main;
+  {{/RSYSLOG_ADDR}}
 
   sendfile    {{NGINX_SENDFILE}};
   #tcp_nopush on;

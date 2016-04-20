@@ -3,6 +3,7 @@ FROM caleb/nginx:1.9
 MAINTAINER Caleb Land <caleb@land.fm>
 
 COPY handlers-enabled/*   /etc/nginx/handlers-enabled/
+COPY include/*            /etc/nginx/include/
 COPY docker-entrypoint.sh /nginx-php-entrypoint.sh
 
 ENTRYPOINT ["/nginx-php-entrypoint.sh"]

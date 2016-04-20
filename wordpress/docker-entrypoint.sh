@@ -28,6 +28,9 @@ fi
 auto-symlink
 auto-symlink "__WORDPRESS"
 
+# Disable the php handler since the wordpress handler takes care of the php
+rm -f /etc/nginx/handlers-enabled/php.conf{,.mo}
+
 #
 # Check that the uploads directory is linked outside of the wordpress project
 #

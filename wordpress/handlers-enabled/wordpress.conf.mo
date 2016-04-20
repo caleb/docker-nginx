@@ -22,7 +22,10 @@ location = /50x.html {
 # try to get result from memcached
 location @memcached {
     default_type text/html;
-    set $memcached_key data-$scheme://$host$request_uri;
+
+		set $memcached_raw_key $scheme://$host$request_uri;
+		set $memcached_key data-$memcached_raw_key;
+
     set $memcached_request 1;
 
     # exceptions
@@ -32,11 +35,15 @@ location @memcached {
     }
 
     # avoid cache serve of wp-admin-like pages, starting with "wp-"
+    if ( $uri ~ "/wp-" ) {
+        set $memcached_request 0;
+    }
+
     if ($args) {
         set $memcached_request 0;
     }
 
-    if ($http_cookie ~* "comment_author_|wordpressuser_|wp-postpass_|wordpress_logged_in_" ) {
+    if ($http_cookie ~* "comment_author_|wordpressuser_|wp-postpass_|wordpress_logged_in_") {
         set $memcached_request 0;
     }
 
@@ -44,6 +51,7 @@ location @memcached {
         add_header X-Cache-Engine "WP-FFPC with memcache via nginx";
         memcached_pass memcached-servers;
         error_page 404 = @rewrites;
+        break;
     }
 
     if ($memcached_request = 0) {
@@ -52,7 +60,7 @@ location @memcached {
 }
 
 location @rewrites {
-    add_header X-Cache-Engine "No cache";
+    add_header X-Cache-Engine "Not cached";
     rewrite ^ /index.php last;
 }
 

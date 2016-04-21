@@ -3,8 +3,7 @@ index index.php index.html index.htm;
 
 {{#MEMCACHED_ADDR}}
 set $memcached_raw_key $scheme://$host$request_uri;
-set_sha1 $memcached_sha1_key $memcached_raw_key;
-set $memcached_key data-$memcached_sha1_key;
+set $memcached_key data-$memcached_raw_key;
 
 set $memcached_request 1;
 

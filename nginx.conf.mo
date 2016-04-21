@@ -44,7 +44,7 @@ http {
 
   variables_hash_bucket_size 128;
 
-  # Change the site of allowed uploads
+  # Change the size of allowed uploads
   client_max_body_size {{NGINX_MAX_BODY_SIZE}};
   client_body_timeout {{NGINX_BODY_TIMEOUT}};
 

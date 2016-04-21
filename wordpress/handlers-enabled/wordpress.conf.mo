@@ -6,7 +6,6 @@ set $memcached_raw_key $scheme://$host$request_uri;
 set_sha1 $memcached_sha1_key $memcached_raw_key;
 set $memcached_key data-$memcached_sha1_key;
 
-
 set $memcached_request 1;
 
 if ($request_method = POST) {
@@ -41,6 +40,8 @@ location = /50x.html {
 # Pass the PHP scripts to FastCGI server
 #
 location ~ ^(?<script_name>.+?\.php)(?<path_info>.*)$ {
+  try_files $uri =404;
+
   {{#NGINX_PHP_CLIENT_MAX_BODY_SIZE}}
   client_max_body_size {{NGINX_PHP_CLIENT_MAX_BODY_SIZE}};
   {{/NGINX_PHP_CLIENT_MAX_BODY_SIZE}}

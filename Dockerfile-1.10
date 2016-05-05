@@ -1,0 +1,36 @@
+FROM nginx:1.10
+
+MAINTAINER Caleb Land <caleb@land.fm>
+
+ENV DOCKER_HELPERS_VERSION=2.0
+
+# Download our docker helpers
+ADD https://github.com/caleb/docker-helpers/releases/download/v${DOCKER_HELPERS_VERSION}/helpers-v${DOCKER_HELPERS_VERSION}.tar.gz /tmp/helpers.tar.gz
+
+# Install the docker helpers
+RUN mkdir -p /helpers \
+&&  tar xzf /tmp/helpers.tar.gz -C / \
+&&  rm /tmp/helpers.tar.gz
+
+# Install the base system
+RUN /bin/bash /helpers/install-base.sh
+
+RUN mkdir -p /etc/nginx/sites-enabled \
+&&  rm -rf /etc/nginx/conf.d \
+&&  mkdir -p /etc/nginx/upstreams-enabled \
+&&  mkdir -p /etc/nginx/upstreams-available \
+&&  mkdir -p /etc/nginx/handlers-enabled \
+&&  mkdir -p /etc/nginx/handlers-available
+
+# Remove the nginx configuration so when run the entrypoint a new one is created
+RUN rm -f /etc/nginx/nginx.conf
+
+COPY nginx.conf.mo   /etc/nginx/nginx.conf.mo
+COPY sites-available /etc/nginx/sites-available
+COPY include         /etc/nginx/include
+
+COPY docker-entrypoint.sh /nginx-entrypoint.sh
+
+ENTRYPOINT ["/nginx-entrypoint.sh"]
+
+CMD ["nginx", "-g", "daemon off;"]

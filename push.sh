@@ -2,6 +2,7 @@
 
 docker push caleb/nginx:1.7
 docker push caleb/nginx:1.9
+docker push caleb/nginx:1.10
 docker push caleb/nginx:latest
 
 cd php

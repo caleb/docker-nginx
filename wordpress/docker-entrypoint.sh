@@ -50,6 +50,9 @@ if [ "${WITH_MEMCACHED,,}" = "yes" ] || [ "${WITH_MEMCACHED,,}" = "true" ]; then
     rm "${memcached_upstream_conf_file}"
     ln -s /etc/nginx/upstreams-available/memcached_upstream.conf /etc/nginx/upstreams-enabled
   fi
+else
+  # Unset our WITH_MEMCACHED variable so we can use it in our mustache templates
+  unset WITH_MEMCACHED
 fi
 
 exec /nginx-php-entrypoint.sh "$@"

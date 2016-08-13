@@ -1,7 +1,7 @@
 charset UTF-8;
 index index.php index.html index.htm;
 
-{{#MEMCACHED_ADDR}}
+{{#WITH_MEMCACHED}}
 set $memcached_raw_key $scheme://$host$request_uri;
 set $memcached_key data-$memcached_raw_key;
 
@@ -22,7 +22,7 @@ if ($args) {
 if ($http_cookie ~* "comment_author_|wordpressuser_|wp-postpass_|wordpress_logged_in_") {
   set $memcached_request 0;
 }
-{{/MEMCACHED_ADDR}}
+{{/WITH_MEMCACHED}}
 
 location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ {
   expires 24h;
@@ -45,26 +45,26 @@ location ~ ^(?<script_name>.+?\.php)(?<path_info>.*)$ {
   client_max_body_size {{NGINX_PHP_CLIENT_MAX_BODY_SIZE}};
   {{/NGINX_PHP_CLIENT_MAX_BODY_SIZE}}
 
-  {{#MEMCACHED_ADDR}}
+  {{#WITH_MEMCACHED}}
   default_type text/html;
 
   if ($memcached_request = 1) {
     memcached_pass memcached-servers;
     error_page 404 = @nocache;
   }
-  {{/MEMCACHED_ADDR}}
+  {{/WITH_MEMCACHED}}
 
   include /etc/nginx/include/php-fastcgi-params.conf;
   include /etc/nginx/include/php-fastcgi-pass.conf;
 }
 
-{{#MEMCACHED_ADDR}}
+{{#WITH_MEMCACHED}}
 location @nocache {
   add_header X-Cache-Engine "not cached";
   include /etc/nginx/include/php-fastcgi-params.conf;
   include /etc/nginx/include/php-fastcgi-pass.conf;
 }
-{{/MEMCACHED_ADDR}}
+{{/WITH_MEMCACHED}}
 
 location / {
   try_files $uri $uri/ @rewrites;
